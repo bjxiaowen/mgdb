@@ -3,3 +3,8 @@
 3.MongoDBBulkInsert 添加多个文档对象
 4.MongoDBUpdateExample 更新,子文档的例子
 5.MongoDBFindOperations MongoDB查找例子
+6.MongoDBFindOne  findOne的例子
+7.MongoDBFindAndModify 查询之后在修改
+8.MongoDBDistinct  按条件去重
+9.MongoDBExists 判断数据是否存在
+10.MongoDBRemove 删除数据

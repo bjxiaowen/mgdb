@@ -37,7 +37,10 @@ public class MongoDBFindOperations {
         }
     }
      
-    // 根据选择标准检索文档
+    /**
+     * 查询速度大于50的数据
+     * @throws UnknownHostException
+     */
     public static void findBYCriteria() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
         DB db = m1.getDB("mymgdb");
@@ -55,11 +58,15 @@ public class MongoDBFindOperations {
         }
     }
      
+    /**
+     * 查询id=3的数据
+     * @throws UnknownHostException
+     */
     public static void findByEquality() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
         DB db = m1.getDB("mymgdb");
         DBCollection col = db.getCollection("Car");
-        DBObject query = new BasicDBObject("_id", 3);
+        DBObject query = new BasicDBObject("_id", 11);
         DBCursor c1 = col.find(query);
         System.out.println("­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­");
         try {
@@ -92,7 +99,7 @@ public class MongoDBFindOperations {
     }
     
     /**
-     * 大于60
+     * 大于60并且包含name和speed
      * @throws UnknownHostException
      */
     public static void findByfields() throws UnknownHostException {
@@ -101,8 +108,6 @@ public class MongoDBFindOperations {
         DBCollection col = db.getCollection("Car");
  
         DBObject query = new BasicDBObject("speed",new BasicDBObject("$gt", 60));
-        // fields with name and speed field is specified and only these fields
-        // are displayed
         BasicDBObject fields = new BasicDBObject("name", 1).append("speed", 1);
         DBCursor carCursor1 = col.find(query, fields);
         System.out.println("­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­");
@@ -114,7 +119,11 @@ public class MongoDBFindOperations {
             carCursor1.close();
         }
     }
-     
+    
+    /**
+     * 查询速度大于65并且不包含cno和mfdcountry
+     * @throws UnknownHostException
+     */
     public static void excludeByfields() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
         DB db = m1.getDB("mymgdb");
@@ -133,18 +142,21 @@ public class MongoDBFindOperations {
             carCursor1.close();
         }
     }
-     
+    
+    /**
+     * 只显示id这一行数据
+     * @throws UnknownHostException
+     */
     public static void excludeByIdfield() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
-        DB db = m1.getDB("test");
-        DBCollection col = db.getCollection("car");
+        DB db = m1.getDB("mymgdb");
+        DBCollection col = db.getCollection("Car");
  
         DBObject query = new BasicDBObject("speed",new BasicDBObject("$gt", 65)); // excluding id field by setting
                                                 // to 0
-        BasicDBObject fields = new BasicDBObject("_id", 0);
+        BasicDBObject fields = new BasicDBObject("_id", 13);
         DBCursor carCursor1 = col.find(query, fields);
-        System.out
-                .println("­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­");
+        System.out.println("­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­");
         try {
             while (carCursor1.hasNext()) {
                 System.out.println(carCursor1.next());
@@ -154,10 +166,14 @@ public class MongoDBFindOperations {
         }
     }
  
+    /**
+     * 通过name来排序
+     * @throws UnknownHostException
+     */
     public static void sortMongodb() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
-        DB db = m1.getDB("test");
-        DBCollection col = db.getCollection("car");
+        DB db = m1.getDB("mymgdb");
+        DBCollection col = db.getCollection("Car");
         DBCursor carCursor = col.find();
         // sort the car collection in ascending order
         carCursor.sort(new BasicDBObject("name", 1));
@@ -172,31 +188,37 @@ public class MongoDBFindOperations {
         }
     }
      
+    /**
+     * 查询前2条数据
+     * @throws UnknownHostException
+     */
     public static void limitMongodb() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
-        DB db = m1.getDB("test");
-        DBCollection col = db.getCollection("car");
+        DB db = m1.getDB("mymgdb");
+        DBCollection col = db.getCollection("Car");
         // limits to only 2 records
         DBCursor carCursor = col.find().limit(2);
          
         try {
             while (carCursor.hasNext()) {
- 
                 System.out.println(carCursor.next());
             }
         } finally {
             carCursor.close();
         }
     }
-     
+    
+    /**
+     * 查询聚集中第2条以后的记录
+     * @throws UnknownHostException
+     */
     public static void skipMongodb() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
-        DB db = m1.getDB("test");
-        DBCollection col = db.getCollection("car");
+        DB db = m1.getDB("mymgdb");
+        DBCollection col = db.getCollection("Car");
         // skips the first 10 records
-        DBCursor carCursor = col.find().skip(10);
-        System.out
-                .println("­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­");
+        DBCursor carCursor = col.find().skip(2);
+        System.out.println("­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­");
         try {
             while (carCursor.hasNext()) {
  
@@ -207,15 +229,18 @@ public class MongoDBFindOperations {
         }
     }
      
+    /**
+     * 查询聚集name排序以后的2条记录
+     * @throws UnknownHostException
+     */
     public static void sortLimitMongodb() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
-        DB db = m1.getDB("test");
-        DBCollection col = db.getCollection("car");
+        DB db = m1.getDB("mymgdb");
+        DBCollection col = db.getCollection("Car");
         DBCursor carCursor = col.find();
         // combining sort and limit methods
         carCursor.sort(new BasicDBObject("name", 1)).limit(2);
-        System.out
-                .println("­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­");
+        System.out.println("­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­");
         try {
             while (carCursor.hasNext()) {
                 System.out.println(carCursor.next());
@@ -225,19 +250,20 @@ public class MongoDBFindOperations {
         }
     }
      
+    /**
+     * 插入数组数据
+     * @throws UnknownHostException
+     */
     public static void insertArray() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
-        DB db = m1.getDB("test");
-        DBCollection col = db.getCollection("car"); // regno array is declared
+        DB db = m1.getDB("mymgdb");
+        DBCollection col = db.getCollection("Car"); 
         List<Integer> regno = new ArrayList<Integer>();
-        // adding values to regno field
         regno.add(31);
         regno.add(41);
         regno.add(65);
         regno.add(75);
-        // setting regno to new object b1
         BasicDBObject b1 = new BasicDBObject("regno", regno);
-        // inserting b1 to collection col
         col.insert(b1);
         DBCursor c3 = col.find();
         try {
@@ -248,15 +274,18 @@ public class MongoDBFindOperations {
             c3.close();
         }
     }
-     
+    
+    /**
+     * 查询数组中大于31小于65
+     * @throws UnknownHostException
+     */
     public static void queryArray() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
-        DB db = m1.getDB("test");
-        DBCollection col = db.getCollection("car");
+        DB db = m1.getDB("mymgdb");
+        DBCollection col = db.getCollection("Car");
  
         // querying for array values greater than 31 and less than 65
-        DBObject query = new BasicDBObject("regno",
-                new BasicDBObject("$gt", 31).append("$lt", 65));
+        DBObject query = new BasicDBObject("regno",new BasicDBObject("$gt", 31).append("$lt", 65));
         DBCursor c1 = col.find(query);
         try {
             while (c1.hasNext()) {
@@ -266,16 +295,18 @@ public class MongoDBFindOperations {
             c1.close();
         }
     }
-     
+    
+    /**
+     * 查询regno数组中有75的数据
+     * @throws UnknownHostException
+     */
     public static void queryArrayElement() throws UnknownHostException {
         MongoClient m1 = new MongoClient("localhost");
-        DB db = m1.getDB("test");
-        DBCollection col = db.getCollection("car");
+        DB db = m1.getDB("mymgdb");
+        DBCollection col = db.getCollection("Car");
  
-        // quering for regno 75
         DBObject query = new BasicDBObject("regno", 75);
         DBCursor c1 = col.find(query);
-         
         try {
             while (c1.hasNext()) {
                 System.out.println(c1.next());
@@ -285,7 +316,24 @@ public class MongoDBFindOperations {
         }
     }
 	public static void main(String[] args) {
-		
+		try {
+			//findAll();//查询所有
+			//findBYCriteria();//速度大于50
+			//findByEquality();//按id查询
+			//findByQueryOperators();//查询大于40小于65
+			//findByfields();
+			//excludeByfields();
+			//excludeByIdfield();
+			//sortMongodb();
+			//limitMongodb();
+			//skipMongodb();
+			//sortLimitMongodb();
+			//insertArray();
+			//queryArray();
+			queryArrayElement();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
