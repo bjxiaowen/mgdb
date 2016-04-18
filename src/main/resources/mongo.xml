@@ -7,7 +7,6 @@
         http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.5.xsd">
 
 	<mongo:mongo host="localhost" port="27017" id="mongo" />
-	
 	<mongo:db-factory dbname="mymgdb" mongo-ref="mongo" id="mongoDbFactory" />
  
 	<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
