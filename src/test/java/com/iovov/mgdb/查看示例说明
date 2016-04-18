@@ -8,3 +8,4 @@
 8.MongoDBDistinct  按条件去重
 9.MongoDBExists 判断数据是否存在
 10.MongoDBRemove 删除数据
+11.SpringMongoDBXMLMain  spring中配置mongodb
